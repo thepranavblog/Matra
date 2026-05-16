@@ -1,0 +1,21 @@
+# Environment variables — never commit secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# User data storage
+data/
+*.json
+
+# OS
+.DS_Store
