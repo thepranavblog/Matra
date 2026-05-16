@@ -2,7 +2,7 @@
 ai_engine.py — The brain of Mātra.
 
 Every user message passes through here. We build a rich context prompt
-containing the user's profile + recent history, then call Claude.
+containing the user's profile + recent history, then call Gemini.
 The AI decides whether the message is a meal log, workout log, or a question,
 responds intelligently, and we extract any structured data to persist.
 """
@@ -11,10 +11,10 @@ import os
 import json
 import re
 from datetime import datetime
-import anthropic
+import google.generativeai as genai
 from storage import load_user, save_user, append_history
 
-client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def build_system_prompt(user: dict) -> str:
@@ -109,14 +109,13 @@ Current time: {datetime.now().strftime('%I:%M %p')}
 async def get_matra_response(user_id: str, user: dict, message: str) -> str:
     system = build_system_prompt(user)
 
-    response = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1000,
-        system=system,
-        messages=[{"role": "user", "content": message}]
+    model = genai.GenerativeModel(
+        model_name="gemini-2.0-flash",
+        system_instruction=system,
     )
+    response = model.generate_content(message)
 
-    full_response = response.content[0].text
+    full_response = response.text
 
     # ── Extract and persist structured log if present ──
     try:
