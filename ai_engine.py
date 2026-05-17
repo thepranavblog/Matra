@@ -8,12 +8,14 @@ responds intelligently, and we extract any structured data to persist.
 """
 
 import os
+from dotenv import load_dotenv
 import json
 import re
 from datetime import datetime
 import google.generativeai as genai
 from storage import load_user, save_user, append_history
 
+load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 
