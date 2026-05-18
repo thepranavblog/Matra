@@ -2,7 +2,7 @@
 ai_engine.py — The brain of Mātra.
 
 Every user message passes through here. We build a rich context prompt
-containing the user's profile + recent history, then call Gemini.
+containing the user's profile + recent history, then call Groq.
 The AI decides whether the message is a meal log, workout log, or a question,
 responds intelligently, and we extract any structured data to persist.
 """
@@ -12,11 +12,11 @@ from dotenv import load_dotenv
 import json
 import re
 from datetime import datetime
-import google.generativeai as genai
+from groq import Groq
 from storage import load_user, save_user, append_history
 
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
 def build_system_prompt(user: dict) -> str:
@@ -111,13 +111,16 @@ Current time: {datetime.now().strftime('%I:%M %p')}
 async def get_matra_response(user_id: str, user: dict, message: str) -> str:
     system = build_system_prompt(user)
 
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",
-        system_instruction=system,
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": message}
+        ],
+        max_tokens=1000
     )
-    response = model.generate_content(message)
 
-    full_response = response.text
+    full_response = response.choices[0].message.content
 
     # ── Extract and persist structured log if present ──
     try:
