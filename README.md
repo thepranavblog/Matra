@@ -1,76 +1,101 @@
-# 🏋️ Mātra — Your Desi Fitness OS
+<h1 align="center">🏋️ Mātra</h1>
+<p align="center"><b>Your Desi Fitness OS — Telegram bot for gym tracking + nutrition, built for urban Indians.</b></p>
 
-A Telegram bot combining gym coaching + nutrition tracking with full Indian context.
-
----
-
-## What it does
-
-- Onboards you with a 2-minute profile setup
-- Tracks workouts conversationally — "did chest today, bench 80kg 4x8"
-- Remembers history — next session: "last time 80kg, try 82.5 today"
-- Tracks meals, estimates macros, shows running totals
-- Indian-context suggestions — chole, paneer bhurji, dal, not chicken & broccoli
-- Rest day intelligence — protein still matters for recovery
-- /summary — macro snapshot + tomorrow's suggestion
+<p align="center">
+  <img src="https://img.shields.io/badge/Telegram-Bot-2CA5E0?style=flat&logo=telegram" />
+  <img src="https://img.shields.io/badge/AI-Groq%20%7C%20Llama%203.3-orange?style=flat" />
+  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=flat&logo=python" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat" />
+</p>
 
 ---
 
-## Setup (10 minutes)
+## What is Mātra?
 
-### 1. Get your Telegram Bot Token
-Open Telegram → search @BotFather → /newbot → copy the token
+Mātra is a conversational fitness companion on Telegram. It combines gym coaching and nutrition tracking into one chat interface — with full Indian food and lifestyle context baked in.
 
-### 2. Get your Anthropic API Key
-Go to console.anthropic.com → create an API key
-
-### 3. Install and run
-
-    pip install -r requirements.txt
-    cp .env.example .env
-    # Edit .env with your keys
-    python bot.py
-
-Open Telegram, find your bot, send /start.
+No app downloads. No dashboards. Just talk to it.
 
 ---
 
-## Project structure
+## Features
 
-    matra/
-    ├── bot.py          — Telegram handlers + onboarding flow
-    ├── ai_engine.py    — Builds context, calls Claude, parses logs
-    ├── storage.py      — JSON file storage (one file per user)
-    ├── data/           — Auto-created, stores profiles + history
-    ├── requirements.txt
-    └── .env.example
-
----
-
-## How memory works
-
-Every message → ai_engine.py builds a prompt with:
-  - Full user profile (goal, weight, diet, cook situation, city)
-  - Last 10 workout + meal logs
-  - Auto-calculated macro targets
-
-Sent to Claude on every message. AI parses response for structured data and saves it.
+| Feature | Description |
+|---|---|
+| 🏋️ Workout tracking | Log sessions conversationally — "bench 80kg 4x8" |
+| 📈 Progressive overload | Compares to last session, nudges you to go heavier |
+| 🍽️ Macro tracking | Estimates calories, protein, carbs, fat from your meals |
+| 🇮🇳 Indian food context | Thinks in dal, paneer, roti — not chicken & broccoli |
+| 🧠 Memory | Remembers your last 10 logs, profile, and targets |
+| 📊 Daily summary | `/summary` gives a full nutrition snapshot |
+| 😴 Rest day support | Reminds you protein targets still matter on rest days |
 
 ---
 
-## Cost estimate for beta (15-50 users)
+## Getting Started
 
-- Telegram Bot API: Free
-- Claude API: ~Rs 2-5 per user/day
-- Hosting (Railway/Render free tier): Free
-- Total for 50 users: ~Rs 100-250/day — works at Rs 299/user/month
+### 1. Get your keys
+
+- **Telegram token** → [@BotFather](https://t.me/BotFather) → `/newbot`
+- **Groq API key** → [console.groq.com](https://console.groq.com) (free, no credit card)
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure environment
+
+```bash
+cp .env.example .env
+# Fill in TELEGRAM_TOKEN and GROQ_API_KEY
+```
+
+### 4. Run
+
+```bash
+python bot.py
+```
+
+Open Telegram, find your bot, send `/start`.
 
 ---
 
-## Next features post-beta
+## Project Structure
 
-- Voice message support
-- Photo meal logging (snap your thali)
-- Weekly report every Sunday
-- Proactive 8am morning check-in
-- WhatsApp migration when proven
+```
+matra/
+├── bot.py            # Telegram handlers + onboarding flow
+├── ai_engine.py      # Builds context, calls Groq, parses structured logs
+├── storage.py        # JSON file storage (one file per user)
+├── data/             # Auto-created at runtime — stores profiles + history
+├── requirements.txt
+└── .env.example
+```
+
+---
+
+## How It Works
+
+Every message goes through `ai_engine.py`:
+
+1. Loads the user's profile + last 10 logs from `data/<user_id>.json`
+2. Calculates macro targets from weight + goal
+3. Builds a system prompt with full context
+4. Calls Groq (`llama-3.3-70b-versatile`)
+5. Parses the response for structured meal/workout data and saves it
+
+---
+
+## Roadmap
+
+- [ ] Voice message support
+- [ ] Photo meal logging (snap your thali)
+- [ ] Weekly report every Sunday
+- [ ] Proactive morning check-in at 8am
+- [ ] WhatsApp support when proven
+
+---
+
+<p align="center">Built with ❤️ for the Indian fitness community</p>
